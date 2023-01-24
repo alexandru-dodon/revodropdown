@@ -1,4 +1,4 @@
-import { h, r as registerInstance, c as createEvent, H as Host } from './index-d90c08e5.js';
+import { h, r as registerInstance, c as createEvent, H as Host } from './index-8718d62a.js';
 
 (function closest() {
   if (!Element.prototype.matches) {
@@ -101,27 +101,17 @@ const RevoDropdown = class {
     this.isClosing = false;
     this.currentItem = null;
     this.isVisible = false;
-    /**
-     * Should dropdown autoclose on changeValue
-     */
+    this.dataLabel = undefined;
+    this.value = undefined;
+    this.currentFilter = undefined;
+    this.dataId = undefined;
     this.autoClose = true;
-    /**
-     * Define object mapping for id/value
-     */
     this.source = [];
-    /**
-     * Define object mapping for id/value that should always be available
-     * in the results even after filtering
-     */
     this.appendSource = [];
-    /**
-     * Placeholder text
-     */
     this.placeholder = 'Select';
-    /**
-     * Where to append element
-     */
     this.appendTo = 'body';
+    this.filter = undefined;
+    this.maxHeight = undefined;
     this.hasFilter = true;
     this.autocomplete = false;
     this.autoFocus = false;
@@ -373,11 +363,9 @@ const RevoDropdownList = class {
     registerInstance(this, hostRef);
     this.changed = createEvent(this, "changed", 3);
     this.currentItem = 0;
-    /**
-     * Define object mapping for id/value
-     */
     this.sourceItems = [];
     this.isFocused = false;
+    this.dataLabel = undefined;
   }
   /** Recived keyboard down from element */
   onKey(e) {

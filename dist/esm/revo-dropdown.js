@@ -1,12 +1,13 @@
-import { p as promiseResolve, b as bootstrapLazy } from './index-d90c08e5.js';
+import { p as promiseResolve, b as bootstrapLazy } from './index-8718d62a.js';
+export { s as setNonce } from './index-8718d62a.js';
 
 /*
- Stencil Client Patch Browser v2.3.0 | MIT Licensed | https://stenciljs.com
+ Stencil Client Patch Browser v2.22.2 | MIT Licensed | https://stenciljs.com
  */
 const patchBrowser = () => {
     const importMeta = import.meta.url;
-    const opts =  {};
-    if ( importMeta !== '') {
+    const opts = {};
+    if (importMeta !== '') {
         opts.resourcesUrl = new URL('.', importMeta).href;
     }
     return promiseResolve(opts);

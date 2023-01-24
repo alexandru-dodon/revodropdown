@@ -1,4 +1,4 @@
-import { Component, Prop, h, State, Listen, Event, Method, Watch, Host } from '@stencil/core';
+import { h, Host } from '@stencil/core';
 import '../../utils/closestPolifill';
 import { UUID } from '../../utils/consts';
 import { getItemLabel, getItemValue } from '../../utils/item.helpers';
@@ -10,27 +10,17 @@ export class RevoDropdown {
     this.isClosing = false;
     this.currentItem = null;
     this.isVisible = false;
-    /**
-     * Should dropdown autoclose on changeValue
-     */
+    this.dataLabel = undefined;
+    this.value = undefined;
+    this.currentFilter = undefined;
+    this.dataId = undefined;
     this.autoClose = true;
-    /**
-     * Define object mapping for id/value
-     */
     this.source = [];
-    /**
-     * Define object mapping for id/value that should always be available
-     * in the results even after filtering
-     */
     this.appendSource = [];
-    /**
-     * Placeholder text
-     */
     this.placeholder = 'Select';
-    /**
-     * Where to append element
-     */
     this.appendTo = 'body';
+    this.filter = undefined;
+    this.maxHeight = undefined;
     this.hasFilter = true;
     this.autocomplete = false;
     this.autoFocus = false;
@@ -133,15 +123,12 @@ export class RevoDropdown {
     }
   }
   renderDropdown() {
-    return (h("div", { class: "revo-dropdown-list", ref: e => (this.dropdown = e) },
-      h("div", Object.assign({}, { [UUID]: this.uuid }, { class: "dropdown-inner", ref: e => (this.dropdownInner = e) }),
-        this.hasFilter && !this.autocomplete ? (h(DropdownListFilter, { ref: e => (this.dropdownInput = e), source: this.source, filter: this.filter, dataLabel: this.dataLabel, value: this.currentFilter || '', filterValue: this.currentFilter || '', onFilterChange: e => {
-            var _a;
-            this.currentFilter = e.value;
-            this.currentSource = e.items.concat(this.appendSource);
-            (_a = this.revoList) === null || _a === void 0 ? void 0 : _a.refresh(this.currentSource);
-          } })) : undefined,
-        h("revo-list", { ref: e => (this.revoList = e), isFocused: true, sourceItems: this.currentSource, dataLabel: this.dataLabel, onChanged: e => this.doChange(e.detail.item, e.detail.e) }))));
+    return (h("div", { class: "revo-dropdown-list", ref: e => (this.dropdown = e) }, h("div", Object.assign({}, { [UUID]: this.uuid }, { class: "dropdown-inner", ref: e => (this.dropdownInner = e) }), this.hasFilter && !this.autocomplete ? (h(DropdownListFilter, { ref: e => (this.dropdownInput = e), source: this.source, filter: this.filter, dataLabel: this.dataLabel, value: this.currentFilter || '', filterValue: this.currentFilter || '', onFilterChange: e => {
+        var _a;
+        this.currentFilter = e.value;
+        this.currentSource = e.items.concat(this.appendSource);
+        (_a = this.revoList) === null || _a === void 0 ? void 0 : _a.refresh(this.currentSource);
+      } })) : undefined, h("revo-list", { ref: e => (this.revoList = e), isFocused: true, sourceItems: this.currentSource, dataLabel: this.dataLabel, onChanged: e => this.doChange(e.detail.item, e.detail.e) }))));
   }
   renderSelect() {
     const val = this.currentItem && getItemLabel(this.currentItem, this.dataLabel) || '';
@@ -185,16 +172,7 @@ export class RevoDropdown {
     if (this.autocomplete) {
       props['autocomplete'] = true;
     }
-    return (h(Host, Object.assign({}, props),
-      h("label", null, this.placeholder),
-      h("div", { class: "rv-dr-root" },
-        this.autocomplete ? this.renderAutocomplete() : this.renderSelect(),
-        h("span", { class: "actions" },
-          h(ArrowRenderer, null)),
-        h("fieldset", null,
-          h("legend", null,
-            h("span", null, this.placeholder)))),
-      list));
+    return (h(Host, Object.assign({}, props), h("label", null, this.placeholder), h("div", { class: "rv-dr-root" }, this.autocomplete ? this.renderAutocomplete() : this.renderSelect(), h("span", { class: "actions" }, h(ArrowRenderer, null)), h("fieldset", null, h("legend", null, h("span", null, this.placeholder)))), list));
   }
   showAutoComplete() {
     if (!this.isVisible && !this.isClosing) {
@@ -282,387 +260,403 @@ export class RevoDropdown {
     });
   }
   static get is() { return "revo-dropdown"; }
-  static get originalStyleUrls() { return {
-    "$": ["revo-dropdown.style.scss"]
-  }; }
-  static get styleUrls() { return {
-    "$": ["revo-dropdown.style.css"]
-  }; }
-  static get properties() { return {
-    "dataLabel": {
-      "type": "string",
-      "mutable": false,
-      "complexType": {
-        "original": "string",
-        "resolved": "string",
-        "references": {}
+  static get originalStyleUrls() {
+    return {
+      "$": ["revo-dropdown.style.scss"]
+    };
+  }
+  static get styleUrls() {
+    return {
+      "$": ["revo-dropdown.style.css"]
+    };
+  }
+  static get properties() {
+    return {
+      "dataLabel": {
+        "type": "string",
+        "mutable": false,
+        "complexType": {
+          "original": "string",
+          "resolved": "string",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Define object mapping for labels"
+        },
+        "attribute": "data-label",
+        "reflect": false
       },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Define object mapping for labels"
+      "value": {
+        "type": "any",
+        "mutable": true,
+        "complexType": {
+          "original": "any",
+          "resolved": "any",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Selected value"
+        },
+        "attribute": "value",
+        "reflect": false
       },
-      "attribute": "data-label",
-      "reflect": false
-    },
-    "value": {
-      "type": "any",
-      "mutable": true,
-      "complexType": {
-        "original": "any",
-        "resolved": "any",
-        "references": {}
+      "currentFilter": {
+        "type": "any",
+        "mutable": true,
+        "complexType": {
+          "original": "any",
+          "resolved": "any",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Filter value"
+        },
+        "attribute": "current-filter",
+        "reflect": false
       },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Selected value"
+      "dataId": {
+        "type": "string",
+        "mutable": false,
+        "complexType": {
+          "original": "string",
+          "resolved": "string",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Define object mapping for id/value"
+        },
+        "attribute": "data-id",
+        "reflect": false
       },
-      "attribute": "value",
-      "reflect": false
-    },
-    "currentFilter": {
-      "type": "any",
-      "mutable": true,
-      "complexType": {
-        "original": "any",
-        "resolved": "any",
-        "references": {}
+      "autoClose": {
+        "type": "boolean",
+        "mutable": false,
+        "complexType": {
+          "original": "boolean",
+          "resolved": "boolean",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Should dropdown autoclose on changeValue"
+        },
+        "attribute": "auto-close",
+        "reflect": false,
+        "defaultValue": "true"
       },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Filter value"
+      "source": {
+        "type": "unknown",
+        "mutable": false,
+        "complexType": {
+          "original": "any[]",
+          "resolved": "any[]",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Define object mapping for id/value"
+        },
+        "defaultValue": "[]"
       },
-      "attribute": "current-filter",
-      "reflect": false
-    },
-    "dataId": {
-      "type": "string",
-      "mutable": false,
-      "complexType": {
-        "original": "string",
-        "resolved": "string",
-        "references": {}
+      "appendSource": {
+        "type": "unknown",
+        "mutable": false,
+        "complexType": {
+          "original": "any[]",
+          "resolved": "any[]",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Define object mapping for id/value that should always be available\nin the results even after filtering"
+        },
+        "defaultValue": "[]"
       },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Define object mapping for id/value"
+      "placeholder": {
+        "type": "string",
+        "mutable": false,
+        "complexType": {
+          "original": "string",
+          "resolved": "string",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Placeholder text"
+        },
+        "attribute": "placeholder",
+        "reflect": false,
+        "defaultValue": "'Select'"
       },
-      "attribute": "data-id",
-      "reflect": false
-    },
-    "autoClose": {
-      "type": "boolean",
-      "mutable": false,
-      "complexType": {
-        "original": "boolean",
-        "resolved": "boolean",
-        "references": {}
+      "appendTo": {
+        "type": "string",
+        "mutable": false,
+        "complexType": {
+          "original": "'body' | 'current'",
+          "resolved": "\"body\" | \"current\"",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Where to append element"
+        },
+        "attribute": "append-to",
+        "reflect": false,
+        "defaultValue": "'body'"
       },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Should dropdown autoclose on changeValue"
+      "filter": {
+        "type": "string",
+        "mutable": false,
+        "complexType": {
+          "original": "'contains' | 'start'",
+          "resolved": "\"contains\" | \"start\"",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Filter criteria"
+        },
+        "attribute": "filter",
+        "reflect": false
       },
-      "attribute": "auto-close",
-      "reflect": false,
-      "defaultValue": "true"
-    },
-    "source": {
-      "type": "unknown",
-      "mutable": false,
-      "complexType": {
-        "original": "any[]",
-        "resolved": "any[]",
-        "references": {}
+      "maxHeight": {
+        "type": "number",
+        "mutable": false,
+        "complexType": {
+          "original": "number",
+          "resolved": "number",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": ""
+        },
+        "attribute": "max-height",
+        "reflect": false
       },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Define object mapping for id/value"
+      "hasFilter": {
+        "type": "boolean",
+        "mutable": false,
+        "complexType": {
+          "original": "boolean",
+          "resolved": "boolean",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": ""
+        },
+        "attribute": "has-filter",
+        "reflect": false,
+        "defaultValue": "true"
       },
-      "defaultValue": "[]"
-    },
-    "appendSource": {
-      "type": "unknown",
-      "mutable": false,
-      "complexType": {
-        "original": "any[]",
-        "resolved": "any[]",
-        "references": {}
+      "autocomplete": {
+        "type": "boolean",
+        "mutable": false,
+        "complexType": {
+          "original": "boolean",
+          "resolved": "boolean",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": ""
+        },
+        "attribute": "autocomplete",
+        "reflect": false,
+        "defaultValue": "false"
       },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Define object mapping for id/value that should always be available\nin the results even after filtering"
-      },
-      "defaultValue": "[]"
-    },
-    "placeholder": {
-      "type": "string",
-      "mutable": false,
-      "complexType": {
-        "original": "string",
-        "resolved": "string",
-        "references": {}
-      },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Placeholder text"
-      },
-      "attribute": "placeholder",
-      "reflect": false,
-      "defaultValue": "'Select'"
-    },
-    "appendTo": {
-      "type": "string",
-      "mutable": false,
-      "complexType": {
-        "original": "'body' | 'current'",
-        "resolved": "\"body\" | \"current\"",
-        "references": {}
-      },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Where to append element"
-      },
-      "attribute": "append-to",
-      "reflect": false,
-      "defaultValue": "'body'"
-    },
-    "filter": {
-      "type": "string",
-      "mutable": false,
-      "complexType": {
-        "original": "'contains' | 'start'",
-        "resolved": "\"contains\" | \"start\"",
-        "references": {}
-      },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Filter criteria"
-      },
-      "attribute": "filter",
-      "reflect": false
-    },
-    "maxHeight": {
-      "type": "number",
-      "mutable": false,
-      "complexType": {
-        "original": "number",
-        "resolved": "number",
-        "references": {}
-      },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": ""
-      },
-      "attribute": "max-height",
-      "reflect": false
-    },
-    "hasFilter": {
-      "type": "boolean",
-      "mutable": false,
-      "complexType": {
-        "original": "boolean",
-        "resolved": "boolean",
-        "references": {}
-      },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": ""
-      },
-      "attribute": "has-filter",
-      "reflect": false,
-      "defaultValue": "true"
-    },
-    "autocomplete": {
-      "type": "boolean",
-      "mutable": false,
-      "complexType": {
-        "original": "boolean",
-        "resolved": "boolean",
-        "references": {}
-      },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": ""
-      },
-      "attribute": "autocomplete",
-      "reflect": false,
-      "defaultValue": "false"
-    },
-    "autoFocus": {
-      "type": "boolean",
-      "mutable": false,
-      "complexType": {
-        "original": "boolean",
-        "resolved": "boolean",
-        "references": {}
-      },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": ""
-      },
-      "attribute": "auto-focus",
-      "reflect": false,
-      "defaultValue": "false"
-    }
-  }; }
-  static get states() { return {
-    "currentItem": {},
-    "isVisible": {}
-  }; }
-  static get events() { return [{
-      "method": "changeValue",
-      "name": "changed",
-      "bubbles": true,
-      "cancelable": true,
-      "composed": true,
-      "docs": {
-        "tags": [],
-        "text": "When value changed"
-      },
-      "complexType": {
-        "original": "{ val: any; originalEvent?: MouseEvent }",
-        "resolved": "{ val: any; originalEvent?: MouseEvent; }",
-        "references": {
-          "MouseEvent": {
-            "location": "global"
+      "autoFocus": {
+        "type": "boolean",
+        "mutable": false,
+        "complexType": {
+          "original": "boolean",
+          "resolved": "boolean",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": ""
+        },
+        "attribute": "auto-focus",
+        "reflect": false,
+        "defaultValue": "false"
+      }
+    };
+  }
+  static get states() {
+    return {
+      "currentItem": {},
+      "isVisible": {}
+    };
+  }
+  static get events() {
+    return [{
+        "method": "changeValue",
+        "name": "changed",
+        "bubbles": true,
+        "cancelable": true,
+        "composed": true,
+        "docs": {
+          "tags": [],
+          "text": "When value changed"
+        },
+        "complexType": {
+          "original": "{ val: any; originalEvent?: MouseEvent }",
+          "resolved": "{ val: any; originalEvent?: MouseEvent; }",
+          "references": {
+            "MouseEvent": {
+              "location": "global"
+            }
           }
         }
-      }
-    }, {
-      "method": "close",
-      "name": "close",
-      "bubbles": true,
-      "cancelable": true,
-      "composed": true,
-      "docs": {
-        "tags": [],
-        "text": "Before element close, can be prevented"
-      },
-      "complexType": {
-        "original": "any",
-        "resolved": "any",
-        "references": {}
-      }
-    }, {
-      "method": "open",
-      "name": "open",
-      "bubbles": true,
-      "cancelable": true,
-      "composed": true,
-      "docs": {
-        "tags": [],
-        "text": "Before element open, can be prevented"
-      },
-      "complexType": {
-        "original": "any",
-        "resolved": "any",
-        "references": {}
-      }
-    }]; }
-  static get methods() { return {
-    "doClose": {
-      "complexType": {
-        "signature": "(isDisconnected?: boolean) => Promise<void>",
-        "parameters": [{
-            "tags": [],
-            "text": ""
-          }],
-        "references": {
-          "Promise": {
-            "location": "global"
-          }
+      }, {
+        "method": "close",
+        "name": "close",
+        "bubbles": true,
+        "cancelable": true,
+        "composed": true,
+        "docs": {
+          "tags": [],
+          "text": "Before element close, can be prevented"
         },
-        "return": "Promise<void>"
-      },
-      "docs": {
-        "text": "Close dropdown",
-        "tags": []
-      }
-    },
-    "doOpen": {
-      "complexType": {
-        "signature": "() => Promise<void>",
-        "parameters": [],
-        "references": {
-          "Promise": {
-            "location": "global"
-          }
+        "complexType": {
+          "original": "any",
+          "resolved": "any",
+          "references": {}
+        }
+      }, {
+        "method": "open",
+        "name": "open",
+        "bubbles": true,
+        "cancelable": true,
+        "composed": true,
+        "docs": {
+          "tags": [],
+          "text": "Before element open, can be prevented"
         },
-        "return": "Promise<void>"
-      },
-      "docs": {
-        "text": "Open dropdown",
-        "tags": []
-      }
-    },
-    "doChange": {
-      "complexType": {
-        "signature": "(val: any, originalEvent?: MouseEvent) => Promise<void>",
-        "parameters": [{
-            "tags": [],
-            "text": ""
-          }, {
-            "tags": [],
-            "text": ""
-          }],
-        "references": {
-          "Promise": {
-            "location": "global"
+        "complexType": {
+          "original": "any",
+          "resolved": "any",
+          "references": {}
+        }
+      }];
+  }
+  static get methods() {
+    return {
+      "doClose": {
+        "complexType": {
+          "signature": "(isDisconnected?: boolean) => Promise<void>",
+          "parameters": [{
+              "tags": [],
+              "text": ""
+            }],
+          "references": {
+            "Promise": {
+              "location": "global"
+            }
           },
-          "MouseEvent": {
-            "location": "global"
-          }
+          "return": "Promise<void>"
         },
-        "return": "Promise<void>"
+        "docs": {
+          "text": "Close dropdown",
+          "tags": []
+        }
       },
-      "docs": {
-        "text": "Change value",
-        "tags": []
+      "doOpen": {
+        "complexType": {
+          "signature": "() => Promise<void>",
+          "parameters": [],
+          "references": {
+            "Promise": {
+              "location": "global"
+            }
+          },
+          "return": "Promise<void>"
+        },
+        "docs": {
+          "text": "Open dropdown",
+          "tags": []
+        }
+      },
+      "doChange": {
+        "complexType": {
+          "signature": "(val: any, originalEvent?: MouseEvent) => Promise<void>",
+          "parameters": [{
+              "tags": [],
+              "text": ""
+            }, {
+              "tags": [],
+              "text": ""
+            }],
+          "references": {
+            "Promise": {
+              "location": "global"
+            },
+            "MouseEvent": {
+              "location": "global"
+            }
+          },
+          "return": "Promise<void>"
+        },
+        "docs": {
+          "text": "Change value",
+          "tags": []
+        }
       }
-    }
-  }; }
-  static get watchers() { return [{
-      "propName": "value",
-      "methodName": "onValueChanged"
-    }]; }
-  static get listeners() { return [{
-      "name": "mousedown",
-      "method": "onMouseUp",
-      "target": "document",
-      "capture": false,
-      "passive": true
-    }, {
-      "name": "keydown",
-      "method": "onKey",
-      "target": "document",
-      "capture": false,
-      "passive": false
-    }]; }
+    };
+  }
+  static get watchers() {
+    return [{
+        "propName": "value",
+        "methodName": "onValueChanged"
+      }];
+  }
+  static get listeners() {
+    return [{
+        "name": "mousedown",
+        "method": "onMouseUp",
+        "target": "document",
+        "capture": false,
+        "passive": true
+      }, {
+        "name": "keydown",
+        "method": "onKey",
+        "target": "document",
+        "capture": false,
+        "passive": false
+      }];
+  }
 }

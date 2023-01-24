@@ -1,13 +1,11 @@
-import { Component, h, Prop, Event, Method, Listen, State } from '@stencil/core';
+import { h } from '@stencil/core';
 import { getItemLabel } from '../../utils/item.helpers';
 export class RevoDropdownList {
   constructor() {
     this.currentItem = 0;
-    /**
-     * Define object mapping for id/value
-     */
     this.sourceItems = [];
     this.isFocused = false;
+    this.dataLabel = undefined;
   }
   /** Recived keyboard down from element */
   onKey(e) {
@@ -76,110 +74,124 @@ export class RevoDropdownList {
     return h("ul", null, items);
   }
   static get is() { return "revo-list"; }
-  static get originalStyleUrls() { return {
-    "$": ["revo-list.style.scss"]
-  }; }
-  static get styleUrls() { return {
-    "$": ["revo-list.style.css"]
-  }; }
-  static get properties() { return {
-    "sourceItems": {
-      "type": "unknown",
-      "mutable": false,
-      "complexType": {
-        "original": "any[]",
-        "resolved": "any[]",
-        "references": {}
-      },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Define object mapping for id/value"
-      },
-      "defaultValue": "[]"
-    },
-    "isFocused": {
-      "type": "boolean",
-      "mutable": false,
-      "complexType": {
-        "original": "boolean",
-        "resolved": "boolean",
-        "references": {}
-      },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": ""
-      },
-      "attribute": "is-focused",
-      "reflect": false,
-      "defaultValue": "false"
-    },
-    "dataLabel": {
-      "type": "string",
-      "mutable": false,
-      "complexType": {
-        "original": "string",
-        "resolved": "string",
-        "references": {}
-      },
-      "required": false,
-      "optional": false,
-      "docs": {
-        "tags": [],
-        "text": "Define object mapping for labels"
-      },
-      "attribute": "data-label",
-      "reflect": false
-    }
-  }; }
-  static get states() { return {
-    "currentItem": {}
-  }; }
-  static get events() { return [{
-      "method": "changed",
-      "name": "changed",
-      "bubbles": false,
-      "cancelable": true,
-      "composed": true,
-      "docs": {
-        "tags": [],
-        "text": ""
-      },
-      "complexType": {
-        "original": "{ item: any; e: any }",
-        "resolved": "{ item: any; e: any; }",
-        "references": {}
-      }
-    }]; }
-  static get methods() { return {
-    "refresh": {
-      "complexType": {
-        "signature": "(source: any[]) => Promise<void>",
-        "parameters": [{
-            "tags": [],
-            "text": ""
-          }],
-        "references": {
-          "Promise": {
-            "location": "global"
-          }
+  static get originalStyleUrls() {
+    return {
+      "$": ["revo-list.style.scss"]
+    };
+  }
+  static get styleUrls() {
+    return {
+      "$": ["revo-list.style.css"]
+    };
+  }
+  static get properties() {
+    return {
+      "sourceItems": {
+        "type": "unknown",
+        "mutable": false,
+        "complexType": {
+          "original": "any[]",
+          "resolved": "any[]",
+          "references": {}
         },
-        "return": "Promise<void>"
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Define object mapping for id/value"
+        },
+        "defaultValue": "[]"
       },
-      "docs": {
-        "text": "",
-        "tags": []
+      "isFocused": {
+        "type": "boolean",
+        "mutable": false,
+        "complexType": {
+          "original": "boolean",
+          "resolved": "boolean",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": ""
+        },
+        "attribute": "is-focused",
+        "reflect": false,
+        "defaultValue": "false"
+      },
+      "dataLabel": {
+        "type": "string",
+        "mutable": false,
+        "complexType": {
+          "original": "string",
+          "resolved": "string",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": "Define object mapping for labels"
+        },
+        "attribute": "data-label",
+        "reflect": false
       }
-    }
-  }; }
-  static get listeners() { return [{
-      "name": "keydown",
-      "method": "onKey",
-      "target": "document",
-      "capture": false,
-      "passive": false
-    }]; }
+    };
+  }
+  static get states() {
+    return {
+      "currentItem": {}
+    };
+  }
+  static get events() {
+    return [{
+        "method": "changed",
+        "name": "changed",
+        "bubbles": false,
+        "cancelable": true,
+        "composed": true,
+        "docs": {
+          "tags": [],
+          "text": ""
+        },
+        "complexType": {
+          "original": "{ item: any; e: any }",
+          "resolved": "{ item: any; e: any; }",
+          "references": {}
+        }
+      }];
+  }
+  static get methods() {
+    return {
+      "refresh": {
+        "complexType": {
+          "signature": "(source: any[]) => Promise<void>",
+          "parameters": [{
+              "tags": [],
+              "text": ""
+            }],
+          "references": {
+            "Promise": {
+              "location": "global"
+            }
+          },
+          "return": "Promise<void>"
+        },
+        "docs": {
+          "text": "",
+          "tags": []
+        }
+      }
+    };
+  }
+  static get listeners() {
+    return [{
+        "name": "keydown",
+        "method": "onKey",
+        "target": "document",
+        "capture": false,
+        "passive": false
+      }];
+  }
 }
