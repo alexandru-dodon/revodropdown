@@ -56,6 +56,12 @@ export class RevoDropdown {
   @Prop() source: any[] = [];
 
   /**
+   * Define object mapping for id/value that should always be available
+   * in the results even after filtering
+   */
+  @Prop() appendSource: any[] = [];
+
+  /**
    * Placeholder text
    */
   @Prop() placeholder: string = 'Select';
@@ -216,7 +222,7 @@ export class RevoDropdown {
               filterValue={this.currentFilter || ''}
               onFilterChange={e => {
                 this.currentFilter = e.value;
-                this.currentSource = e.items;
+                this.currentSource = e.items.concat(this.appendSource);
                 this.revoList?.refresh(this.currentSource);
               }}
             />
