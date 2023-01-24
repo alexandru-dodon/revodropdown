@@ -227,7 +227,6 @@ const RevoDropdown = class {
     return (h("div", { class: "revo-dropdown-list", ref: e => (this.dropdown = e) }, h("div", Object.assign({}, { [UUID]: this.uuid }, { class: "dropdown-inner", ref: e => (this.dropdownInner = e) }), this.hasFilter && !this.autocomplete ? (h(DropdownListFilter, { ref: e => (this.dropdownInput = e), source: this.source, filter: this.filter, dataLabel: this.dataLabel, value: this.currentFilter || '', filterValue: this.currentFilter || '', onFilterChange: e => {
         var _a;
         this.currentFilter = e.value;
-        console.log('autocomplete', e.items, this.appendSource);
         this.currentSource = e.items.concat(this.appendSource);
         (_a = this.revoList) === null || _a === void 0 ? void 0 : _a.refresh(this.currentSource);
       } })) : undefined, h("revo-list", { ref: e => (this.revoList = e), isFocused: true, sourceItems: this.currentSource, dataLabel: this.dataLabel, onChanged: e => this.doChange(e.detail.item, e.detail.e) }))));
@@ -252,7 +251,6 @@ const RevoDropdown = class {
       }, onInput: () => this.showAutoComplete(), onFocus: () => this.showAutoComplete(), onClick: () => this.showAutoComplete(), onFilterChange: e => {
         var _a;
         this.currentFilter = e.value;
-        console.log('autocomplete', e.items, this.appendSource);
         this.currentSource = e.items.concat(this.appendSource);
         (_a = this.revoList) === null || _a === void 0 ? void 0 : _a.refresh(this.currentSource);
       } }));
@@ -263,7 +261,6 @@ const RevoDropdown = class {
     if (this.isVisible) {
       list = this.renderDropdown();
     }
-    console.log('appendSource', this.appendSource);
     const props = {
       [UUID]: this.uuid,
       class: {

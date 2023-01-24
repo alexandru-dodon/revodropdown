@@ -138,7 +138,6 @@ export class RevoDropdown {
         this.hasFilter && !this.autocomplete ? (h(DropdownListFilter, { ref: e => (this.dropdownInput = e), source: this.source, filter: this.filter, dataLabel: this.dataLabel, value: this.currentFilter || '', filterValue: this.currentFilter || '', onFilterChange: e => {
             var _a;
             this.currentFilter = e.value;
-            console.log('autocomplete', e.items, this.appendSource);
             this.currentSource = e.items.concat(this.appendSource);
             (_a = this.revoList) === null || _a === void 0 ? void 0 : _a.refresh(this.currentSource);
           } })) : undefined,
@@ -164,7 +163,6 @@ export class RevoDropdown {
       }, onInput: () => this.showAutoComplete(), onFocus: () => this.showAutoComplete(), onClick: () => this.showAutoComplete(), onFilterChange: e => {
         var _a;
         this.currentFilter = e.value;
-        console.log('autocomplete', e.items, this.appendSource);
         this.currentSource = e.items.concat(this.appendSource);
         (_a = this.revoList) === null || _a === void 0 ? void 0 : _a.refresh(this.currentSource);
       } }));
@@ -175,7 +173,6 @@ export class RevoDropdown {
     if (this.isVisible) {
       list = this.renderDropdown();
     }
-    console.log('appendSource', this.appendSource);
     const props = {
       [UUID]: this.uuid,
       class: {
