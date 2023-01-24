@@ -272,7 +272,7 @@ export class RevoDropdown {
         onClick={() => this.showAutoComplete()}
         onFilterChange={e => {
           this.currentFilter = e.value;
-          this.currentSource = e.items;
+          this.currentSource = e.items.concat(this.appendSource);
           this.revoList?.refresh(this.currentSource);
         }}
       />

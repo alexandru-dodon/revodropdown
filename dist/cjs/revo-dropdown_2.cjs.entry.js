@@ -255,7 +255,7 @@ const RevoDropdown = class {
       }, onInput: () => this.showAutoComplete(), onFocus: () => this.showAutoComplete(), onClick: () => this.showAutoComplete(), onFilterChange: e => {
         var _a;
         this.currentFilter = e.value;
-        this.currentSource = e.items;
+        this.currentSource = e.items.concat(this.appendSource);
         (_a = this.revoList) === null || _a === void 0 ? void 0 : _a.refresh(this.currentSource);
       } }));
   }
