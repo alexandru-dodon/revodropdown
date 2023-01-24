@@ -1,5 +1,5 @@
 import { JSXBase } from '../../stencil-public-runtime';
-interface Props extends JSXBase.DOMAttributes {
+interface Props extends JSXBase.DOMAttributes<any> {
   value?: string;
   filterValue?: string;
   source: any[];

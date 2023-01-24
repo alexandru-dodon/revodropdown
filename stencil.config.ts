@@ -10,7 +10,9 @@ const directivesProxyFile = (name: string) => `./framework/${name}/src/revodropd
 export const config: Config = {
   buildEs5: 'prod',
   namespace: 'revo-dropdown',
-  experimentalImportInjection: true,
+  extras: {
+    experimentalImportInjection: true
+  },
   plugins: [sass()],
   outputTargets: [
     angularOutputTarget({
