@@ -222,6 +222,7 @@ export class RevoDropdown {
               filterValue={this.currentFilter || ''}
               onFilterChange={e => {
                 this.currentFilter = e.value;
+                console.log('autocomplete', e.items, this.appendSource);
                 this.currentSource = e.items.concat(this.appendSource);
                 this.revoList?.refresh(this.currentSource);
               }}
@@ -272,6 +273,7 @@ export class RevoDropdown {
         onClick={() => this.showAutoComplete()}
         onFilterChange={e => {
           this.currentFilter = e.value;
+          console.log('autocomplete', e.items, this.appendSource);
           this.currentSource = e.items.concat(this.appendSource);
           this.revoList?.refresh(this.currentSource);
         }}
@@ -284,6 +286,7 @@ export class RevoDropdown {
     if (this.isVisible) {
       list = this.renderDropdown();
     }
+    console.log('appendSource', this.appendSource);
     const props = {
       [UUID]: this.uuid,
       class: {
