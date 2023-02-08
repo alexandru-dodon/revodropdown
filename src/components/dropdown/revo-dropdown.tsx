@@ -327,7 +327,7 @@ export class RevoDropdown {
           e.stopPropagation();
           this.deselect(index);
         }}>
-          <span style={{ 'margin-right': '5px' }}>{this.getSelectedItemLabel(item)}</span>
+          <span style={{ 'margin-right': '5px' }}>{item} {this.getSelectedItemLabel(item)}</span>
           <span style={{ cursor: 'pointer', 'font-weight': 'bold' }}>✕</span>
         </button>)}
       </div>

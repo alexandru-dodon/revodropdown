@@ -290,7 +290,7 @@ const RevoDropdown = class {
       return index.h("div", null, values.map((item, index$1) => index.h("button", { style: { 'margin-left': index$1 > 0 ? '2px' : '' }, onClick: e => {
           e.stopPropagation();
           this.deselect(index$1);
-        } }, index.h("span", { style: { 'margin-right': '5px' } }, this.getSelectedItemLabel(item)), index.h("span", { style: { cursor: 'pointer', 'font-weight': 'bold' } }, "\u2715"))));
+        } }, index.h("span", { style: { 'margin-right': '5px' } }, item, " ", this.getSelectedItemLabel(item)), index.h("span", { style: { cursor: 'pointer', 'font-weight': 'bold' } }, "\u2715"))));
     }
   }
   render() {
