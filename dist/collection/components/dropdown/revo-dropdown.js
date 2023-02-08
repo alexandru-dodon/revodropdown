@@ -113,6 +113,7 @@ export class RevoDropdown {
   }
   componentWillLoad() {
     if (this.value) {
+      console.log('componentWillLoad', this.value);
       this.currentItem = this.value;
     }
   }
