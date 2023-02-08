@@ -321,15 +321,13 @@ export class RevoDropdown {
       values = [...this.currentItem];
     }
 
-    console.log('renderMultiselected', values, this.dataLabel, )
-
     if (values.length) {
       return <div>
         {values.map((item: any, index: number) => <button style={{ 'margin-left': index > 0 ? '2px' : '' }} onClick={e => {
           e.stopPropagation();
           this.deselect(index);
         }}>
-          <span style={{ 'margin-right': '5px' }}>{item} {this.getSelectedItemLabel(item)}</span>
+          <span style={{ 'margin-right': '5px' }}>{this.getSelectedItemLabel(item)}</span>
           <span style={{ cursor: 'pointer', 'font-weight': 'bold' }}>✕</span>
         </button>)}
       </div>

@@ -282,12 +282,11 @@ const RevoDropdown = class {
     if (Array.isArray(this.currentItem)) {
       values = [...this.currentItem];
     }
-    console.log('renderMultiselected', values, this.dataLabel);
     if (values.length) {
       return h("div", null, values.map((item, index) => h("button", { style: { 'margin-left': index > 0 ? '2px' : '' }, onClick: e => {
           e.stopPropagation();
           this.deselect(index);
-        } }, h("span", { style: { 'margin-right': '5px' } }, item, " ", this.getSelectedItemLabel(item)), h("span", { style: { cursor: 'pointer', 'font-weight': 'bold' } }, "\u2715"))));
+        } }, h("span", { style: { 'margin-right': '5px' } }, this.getSelectedItemLabel(item)), h("span", { style: { cursor: 'pointer', 'font-weight': 'bold' } }, "\u2715"))));
     }
   }
   render() {
