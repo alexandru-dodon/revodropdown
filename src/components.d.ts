@@ -51,6 +51,7 @@ export namespace Components {
         "filter": 'contains' | 'start';
         "hasFilter": boolean;
         "maxHeight": number;
+        "multiple": boolean;
         /**
           * Placeholder text
          */
@@ -137,6 +138,7 @@ declare namespace LocalJSX {
         "filter"?: 'contains' | 'start';
         "hasFilter"?: boolean;
         "maxHeight"?: number;
+        "multiple"?: boolean;
         /**
           * When value changed
          */

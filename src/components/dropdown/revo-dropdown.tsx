@@ -78,6 +78,7 @@ export class RevoDropdown {
 
   @Prop() hasFilter: boolean = true;
 
+  @Prop() multiple: boolean = false;
   @Prop() autocomplete: boolean = false;
   @Prop() autoFocus: boolean = false;
 
@@ -134,10 +135,25 @@ export class RevoDropdown {
    * Change value
    */
   @Method() async doChange(val: any, originalEvent?: MouseEvent): Promise<void> {
-    this.value = getItemValue(val, this.dataId);
+    const realValue = getItemValue(val, this.dataId);
+
+    if (this.multiple) {
+      let newVals = [...(this.value || [])];
+
+      if (Array.isArray(this.value)) {
+        newVals.push(realValue);
+      } else {
+        newVals = [realValue];
+      }
+
+      this.value = newVals;
+    } else {
+      this.value = realValue;
+    }
+
     this.changeValue.emit({ val: this.value, originalEvent });
     if (this.autocompleteInput) {
-      this.autocompleteInput.value = getItemLabel(this.currentItem, this.dataLabel);
+      this.autocompleteInput.value = this.multiple ? '' : getItemLabel(this.currentItem, this.dataLabel);
     }
     if (this.autoClose && this.isVisible) {
       this.doClose();
@@ -171,7 +187,11 @@ export class RevoDropdown {
   }
 
   @Watch('value') onValueChanged(newVal: any) {
-    this.currentItem = this.getValue(newVal);
+    if (Array.isArray(newVal)) {
+      this.currentItem = newVal.map((val) => this.getValue(val));
+    } else {
+      this.currentItem = this.getValue(newVal);
+    }
   }
 
   componentWillLoad() {
@@ -208,6 +228,10 @@ export class RevoDropdown {
     }
   }
 
+  private getSelectedItemLabel(item?: any) {
+    return item && getItemLabel(item, this.dataLabel) || '';
+  }
+
   private renderDropdown() {
     return (
       <div class="revo-dropdown-list" ref={e => (this.dropdown = e)}>
@@ -239,13 +263,21 @@ export class RevoDropdown {
     );
   }
 
+  private deselect(index: number) {
+    if (Array.isArray(this.currentItem)) {
+      const items = [...this.currentItem];
+      delete items[index];
+      this.currentItem = [...items].filter((item) => item);
+    }
+  }
+
   renderSelect() {
-    const val = this.currentItem && getItemLabel(this.currentItem, this.dataLabel) || '';
+    const val = this.multiple ? '' : this.getSelectedItemLabel(this.currentItem);
     return <input type="text" disabled class="filter-box" value={val} />;
   }
 
   renderAutocomplete() {
-    const val = this.currentItem ? getItemLabel(this.currentItem, this.dataLabel) : '';
+    const val = this.multiple ? '' : this.getSelectedItemLabel(this.currentItem);
     return (
       <DropdownListFilter
         ref={e => (this.autocompleteInput = e)}
@@ -279,6 +311,34 @@ export class RevoDropdown {
     );
   }
 
+  renderDeselectIcon() {
+    return <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10">
+      <path
+        d="M6.895455 5l2.842897-2.842898c.348864-.348863.348864-.914488 0-1.263636L9.106534.261648c-.348864-.348864-.914489-.348864-1.263636 0L5 3.104545 2.157102.261648c-.348863-.348864-.914488-.348864-1.263636 0L.261648.893466c-.348864.348864-.348864.914489 0 1.263636L3.104545 5 .261648 7.842898c-.348864.348863-.348864.914488 0 1.263636l.631818.631818c.348864.348864.914773.348864 1.263636 0L5 6.895455l2.842898 2.842897c.348863.348864.914772.348864 1.263636 0l.631818-.631818c.348864-.348864.348864-.914489 0-1.263636L6.895455 5z"
+      />
+    </svg>
+  }
+
+  renderMultiselected() {
+    let values = [];
+
+    if (Array.isArray(this.currentItem)) {
+      values = [...this.currentItem];
+    }
+
+    if (values.length) {
+      return <div>
+        {this.currentItem.map((item: any, index: number) => <button style={{ 'margin-left': index > 0 ? '2px' : '' }} onClick={e => {
+          e.stopPropagation();
+          this.deselect(index);
+        }}>
+          <span style={{ 'margin-right': '5px' }}>{this.getSelectedItemLabel(item)}</span>
+          <span style={{ cursor: 'pointer' }}>{this.renderDeselectIcon()}</span>
+        </button>)}
+      </div>
+    }
+  }
+
   render() {
     let list: VNode;
     if (this.isVisible) {
@@ -300,6 +360,7 @@ export class RevoDropdown {
       <Host {...props}>
         <label>{this.placeholder}</label>
         <div class="rv-dr-root">
+          {this.multiple && this.renderMultiselected()}
           {this.autocomplete ? this.renderAutocomplete() : this.renderSelect()}
           <span class="actions"><ArrowRenderer/></span>
           <fieldset>

@@ -22,6 +22,7 @@ export class RevoDropdown {
     this.filter = undefined;
     this.maxHeight = undefined;
     this.hasFilter = true;
+    this.multiple = false;
     this.autocomplete = false;
     this.autoFocus = false;
   }
@@ -57,10 +58,23 @@ export class RevoDropdown {
    * Change value
    */
   async doChange(val, originalEvent) {
-    this.value = getItemValue(val, this.dataId);
+    const realValue = getItemValue(val, this.dataId);
+    if (this.multiple) {
+      let newVals = [...(this.value || [])];
+      if (Array.isArray(this.value)) {
+        newVals.push(realValue);
+      }
+      else {
+        newVals = [realValue];
+      }
+      this.value = newVals;
+    }
+    else {
+      this.value = realValue;
+    }
     this.changeValue.emit({ val: this.value, originalEvent });
     if (this.autocompleteInput) {
-      this.autocompleteInput.value = getItemLabel(this.currentItem, this.dataLabel);
+      this.autocompleteInput.value = this.multiple ? '' : getItemLabel(this.currentItem, this.dataLabel);
     }
     if (this.autoClose && this.isVisible) {
       this.doClose();
@@ -90,7 +104,12 @@ export class RevoDropdown {
     }
   }
   onValueChanged(newVal) {
-    this.currentItem = this.getValue(newVal);
+    if (Array.isArray(newVal)) {
+      this.currentItem = newVal.map((val) => this.getValue(val));
+    }
+    else {
+      this.currentItem = this.getValue(newVal);
+    }
   }
   componentWillLoad() {
     if (this.value) {
@@ -122,6 +141,9 @@ export class RevoDropdown {
       }
     }
   }
+  getSelectedItemLabel(item) {
+    return item && getItemLabel(item, this.dataLabel) || '';
+  }
   renderDropdown() {
     return (h("div", { class: "revo-dropdown-list", ref: e => (this.dropdown = e) }, h("div", Object.assign({}, { [UUID]: this.uuid }, { class: "dropdown-inner", ref: e => (this.dropdownInner = e) }), this.hasFilter && !this.autocomplete ? (h(DropdownListFilter, { ref: e => (this.dropdownInput = e), source: this.source, filter: this.filter, dataLabel: this.dataLabel, value: this.currentFilter || '', filterValue: this.currentFilter || '', onFilterChange: e => {
         var _a;
@@ -130,12 +152,19 @@ export class RevoDropdown {
         (_a = this.revoList) === null || _a === void 0 ? void 0 : _a.refresh(this.currentSource);
       } })) : undefined, h("revo-list", { ref: e => (this.revoList = e), isFocused: true, sourceItems: this.currentSource, dataLabel: this.dataLabel, onChanged: e => this.doChange(e.detail.item, e.detail.e) }))));
   }
+  deselect(index) {
+    if (Array.isArray(this.currentItem)) {
+      const items = [...this.currentItem];
+      delete items[index];
+      this.currentItem = [...items].filter((item) => item);
+    }
+  }
   renderSelect() {
-    const val = this.currentItem && getItemLabel(this.currentItem, this.dataLabel) || '';
+    const val = this.multiple ? '' : this.getSelectedItemLabel(this.currentItem);
     return h("input", { type: "text", disabled: true, class: "filter-box", value: val });
   }
   renderAutocomplete() {
-    const val = this.currentItem ? getItemLabel(this.currentItem, this.dataLabel) : '';
+    const val = this.multiple ? '' : this.getSelectedItemLabel(this.currentItem);
     return (h(DropdownListFilter, { ref: e => (this.autocompleteInput = e), autocomplete: 'true', source: this.source, filter: this.filter, dataLabel: this.dataLabel, value: val, filterValue: this.currentFilter, onKeyDown: e => {
         if (this.isVisible) {
           return;
@@ -153,6 +182,21 @@ export class RevoDropdown {
         this.currentSource = e.items.concat(this.appendSource);
         (_a = this.revoList) === null || _a === void 0 ? void 0 : _a.refresh(this.currentSource);
       } }));
+  }
+  renderDeselectIcon() {
+    return h("svg", { xmlns: "http://www.w3.org/2000/svg", width: "10", height: "10" }, h("path", { d: "M6.895455 5l2.842897-2.842898c.348864-.348863.348864-.914488 0-1.263636L9.106534.261648c-.348864-.348864-.914489-.348864-1.263636 0L5 3.104545 2.157102.261648c-.348863-.348864-.914488-.348864-1.263636 0L.261648.893466c-.348864.348864-.348864.914489 0 1.263636L3.104545 5 .261648 7.842898c-.348864.348863-.348864.914488 0 1.263636l.631818.631818c.348864.348864.914773.348864 1.263636 0L5 6.895455l2.842898 2.842897c.348863.348864.914772.348864 1.263636 0l.631818-.631818c.348864-.348864.348864-.914489 0-1.263636L6.895455 5z" }));
+  }
+  renderMultiselected() {
+    let values = [];
+    if (Array.isArray(this.currentItem)) {
+      values = [...this.currentItem];
+    }
+    if (values.length) {
+      return h("div", null, this.currentItem.map((item, index) => h("button", { style: { 'margin-left': index > 0 ? '2px' : '' }, onClick: e => {
+          e.stopPropagation();
+          this.deselect(index);
+        } }, h("span", { style: { 'margin-right': '5px' } }, this.getSelectedItemLabel(item)), h("span", { style: { cursor: 'pointer' } }, this.renderDeselectIcon()))));
+    }
   }
   render() {
     var _a;
@@ -172,7 +216,7 @@ export class RevoDropdown {
     if (this.autocomplete) {
       props['autocomplete'] = true;
     }
-    return (h(Host, Object.assign({}, props), h("label", null, this.placeholder), h("div", { class: "rv-dr-root" }, this.autocomplete ? this.renderAutocomplete() : this.renderSelect(), h("span", { class: "actions" }, h(ArrowRenderer, null)), h("fieldset", null, h("legend", null, h("span", null, this.placeholder)))), list));
+    return (h(Host, Object.assign({}, props), h("label", null, this.placeholder), h("div", { class: "rv-dr-root" }, this.multiple && this.renderMultiselected(), this.autocomplete ? this.renderAutocomplete() : this.renderSelect(), h("span", { class: "actions" }, h(ArrowRenderer, null)), h("fieldset", null, h("legend", null, h("span", null, this.placeholder)))), list));
   }
   showAutoComplete() {
     if (!this.isVisible && !this.isClosing) {
@@ -477,6 +521,24 @@ export class RevoDropdown {
         "attribute": "has-filter",
         "reflect": false,
         "defaultValue": "true"
+      },
+      "multiple": {
+        "type": "boolean",
+        "mutable": false,
+        "complexType": {
+          "original": "boolean",
+          "resolved": "boolean",
+          "references": {}
+        },
+        "required": false,
+        "optional": false,
+        "docs": {
+          "tags": [],
+          "text": ""
+        },
+        "attribute": "multiple",
+        "reflect": false,
+        "defaultValue": "false"
       },
       "autocomplete": {
         "type": "boolean",

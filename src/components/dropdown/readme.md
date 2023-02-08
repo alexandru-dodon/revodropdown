@@ -18,6 +18,7 @@
 | `filter`        | `filter`         | Filter criteria                                                                                        | `"contains" \| "start"` | `undefined` |
 | `hasFilter`     | `has-filter`     |                                                                                                        | `boolean`               | `true`      |
 | `maxHeight`     | `max-height`     |                                                                                                        | `number`                | `undefined` |
+| `multiple`      | `multiple`       |                                                                                                        | `boolean`               | `false`     |
 | `placeholder`   | `placeholder`    | Placeholder text                                                                                       | `string`                | `'Select'`  |
 | `source`        | --               | Define object mapping for id/value                                                                     | `any[]`                 | `[]`        |
 | `value`         | `value`          | Selected value                                                                                         | `any`                   | `undefined` |

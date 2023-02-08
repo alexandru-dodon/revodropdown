@@ -55,6 +55,7 @@ export declare class RevoDropdown {
   filter: 'contains' | 'start';
   maxHeight: number;
   hasFilter: boolean;
+  multiple: boolean;
   autocomplete: boolean;
   autoFocus: boolean;
   /**
@@ -92,9 +93,13 @@ export declare class RevoDropdown {
   connectedCallback(): void;
   disconnectedCallback(): void;
   componentDidRender(): void;
+  private getSelectedItemLabel;
   private renderDropdown;
+  private deselect;
   renderSelect(): any;
   renderAutocomplete(): any;
+  renderDeselectIcon(): any;
+  renderMultiselected(): any;
   render(): any;
   private showAutoComplete;
   private getValue;
