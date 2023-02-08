@@ -187,11 +187,13 @@ export class RevoDropdown {
   }
 
   @Watch('value') onValueChanged(newVal: any) {
+    console.log('onValueChanged', newVal);
     if (Array.isArray(newVal)) {
       this.currentItem = newVal.map((val) => this.getValue(val));
     } else {
       this.currentItem = this.getValue(newVal);
     }
+    console.log('onValueChanged', this.currentItem);
   }
 
   componentWillLoad() {
@@ -312,14 +314,6 @@ export class RevoDropdown {
     );
   }
 
-  renderDeselectIcon() {
-    return <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10">
-      <path
-        d="M6.895455 5l2.842897-2.842898c.348864-.348863.348864-.914488 0-1.263636L9.106534.261648c-.348864-.348864-.914489-.348864-1.263636 0L5 3.104545 2.157102.261648c-.348863-.348864-.914488-.348864-1.263636 0L.261648.893466c-.348864.348864-.348864.914489 0 1.263636L3.104545 5 .261648 7.842898c-.348864.348863-.348864.914488 0 1.263636l.631818.631818c.348864.348864.914773.348864 1.263636 0L5 6.895455l2.842898 2.842897c.348863.348864.914772.348864 1.263636 0l.631818-.631818c.348864-.348864.348864-.914489 0-1.263636L6.895455 5z"
-      />
-    </svg>
-  }
-
   renderMultiselected() {
     let values = [];
 
@@ -329,12 +323,12 @@ export class RevoDropdown {
 
     if (values.length) {
       return <div>
-        {this.currentItem.map((item: any, index: number) => <button style={{ 'margin-left': index > 0 ? '2px' : '' }} onClick={e => {
+        {values.map((item: any, index: number) => <button style={{ 'margin-left': index > 0 ? '2px' : '' }} onClick={e => {
           e.stopPropagation();
           this.deselect(index);
         }}>
           <span style={{ 'margin-right': '5px' }}>{this.getSelectedItemLabel(item)}</span>
-          <span style={{ cursor: 'pointer' }}>{this.renderDeselectIcon()}</span>
+          <span style={{ cursor: 'pointer', 'font-weight': 'bold' }}>✕</span>
         </button>)}
       </div>
     }

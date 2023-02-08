@@ -199,12 +199,14 @@ const RevoDropdown = class {
     }
   }
   onValueChanged(newVal) {
+    console.log('onValueChanged', newVal);
     if (Array.isArray(newVal)) {
       this.currentItem = newVal.map((val) => this.getValue(val));
     }
     else {
       this.currentItem = this.getValue(newVal);
     }
+    console.log('onValueChanged', this.currentItem);
   }
   componentWillLoad() {
     if (this.value) {
@@ -279,19 +281,16 @@ const RevoDropdown = class {
         (_a = this.revoList) === null || _a === void 0 ? void 0 : _a.refresh(this.currentSource);
       } }));
   }
-  renderDeselectIcon() {
-    return index.h("svg", { xmlns: "http://www.w3.org/2000/svg", width: "10", height: "10" }, index.h("path", { d: "M6.895455 5l2.842897-2.842898c.348864-.348863.348864-.914488 0-1.263636L9.106534.261648c-.348864-.348864-.914489-.348864-1.263636 0L5 3.104545 2.157102.261648c-.348863-.348864-.914488-.348864-1.263636 0L.261648.893466c-.348864.348864-.348864.914489 0 1.263636L3.104545 5 .261648 7.842898c-.348864.348863-.348864.914488 0 1.263636l.631818.631818c.348864.348864.914773.348864 1.263636 0L5 6.895455l2.842898 2.842897c.348863.348864.914772.348864 1.263636 0l.631818-.631818c.348864-.348864.348864-.914489 0-1.263636L6.895455 5z" }));
-  }
   renderMultiselected() {
     let values = [];
     if (Array.isArray(this.currentItem)) {
       values = [...this.currentItem];
     }
     if (values.length) {
-      return index.h("div", null, this.currentItem.map((item, index$1) => index.h("button", { style: { 'margin-left': index$1 > 0 ? '2px' : '' }, onClick: e => {
+      return index.h("div", null, values.map((item, index$1) => index.h("button", { style: { 'margin-left': index$1 > 0 ? '2px' : '' }, onClick: e => {
           e.stopPropagation();
           this.deselect(index$1);
-        } }, index.h("span", { style: { 'margin-right': '5px' } }, this.getSelectedItemLabel(item)), index.h("span", { style: { cursor: 'pointer' } }, this.renderDeselectIcon()))));
+        } }, index.h("span", { style: { 'margin-right': '5px' } }, this.getSelectedItemLabel(item)), index.h("span", { style: { cursor: 'pointer', 'font-weight': 'bold' } }, "\u2715"))));
     }
   }
   render() {

@@ -98,7 +98,6 @@ export declare class RevoDropdown {
   private deselect;
   renderSelect(): any;
   renderAutocomplete(): any;
-  renderDeselectIcon(): any;
   renderMultiselected(): any;
   render(): any;
   private showAutoComplete;
