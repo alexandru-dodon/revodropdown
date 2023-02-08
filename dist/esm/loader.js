@@ -1,5 +1,5 @@
-import { p as promiseResolve, b as bootstrapLazy } from './index-8718d62a.js';
-export { s as setNonce } from './index-8718d62a.js';
+import { p as promiseResolve, b as bootstrapLazy } from './index-422e5084.js';
+export { s as setNonce } from './index-422e5084.js';
 
 /*
  Stencil Client Patch Esm v2.22.2 | MIT Licensed | https://stenciljs.com

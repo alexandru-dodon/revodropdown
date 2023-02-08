@@ -89,7 +89,6 @@ export declare class RevoDropdown {
   onMouseUp(e: MouseEvent): void;
   onKey(e: KeyboardEvent): void;
   onValueChanged(newVal: any): void;
-  componentWillLoad(): void;
   connectedCallback(): void;
   disconnectedCallback(): void;
   componentDidRender(): void;

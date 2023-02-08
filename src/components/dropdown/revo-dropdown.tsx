@@ -196,12 +196,12 @@ export class RevoDropdown {
     console.log('onValueChanged', this.currentItem);
   }
 
-  componentWillLoad() {
-    if (this.value) {
-      console.log('componentWillLoad', this.value);
-      this.currentItem = this.value;
-    }
-  }
+  // componentWillLoad() {
+  //   if (this.value) {
+  //     console.log('componentWillLoad', this.value);
+  //     this.currentItem = this.value;
+  //   }
+  // }
 
   connectedCallback() {
     this.uuid = `${this.uuidv4(new Date().getTime())}-rvdropdown`;
@@ -320,6 +320,8 @@ export class RevoDropdown {
     if (Array.isArray(this.currentItem)) {
       values = [...this.currentItem];
     }
+
+    console.log('renderMultiselected', values, this.dataLabel, )
 
     if (values.length) {
       return <div>

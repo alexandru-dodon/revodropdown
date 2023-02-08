@@ -1,4 +1,4 @@
-import { h, r as registerInstance, c as createEvent, H as Host } from './index-8718d62a.js';
+import { h, r as registerInstance, c as createEvent, H as Host } from './index-422e5084.js';
 
 (function closest() {
   if (!Element.prototype.matches) {
@@ -204,12 +204,12 @@ const RevoDropdown = class {
     }
     console.log('onValueChanged', this.currentItem);
   }
-  componentWillLoad() {
-    if (this.value) {
-      console.log('componentWillLoad', this.value);
-      this.currentItem = this.value;
-    }
-  }
+  // componentWillLoad() {
+  //   if (this.value) {
+  //     console.log('componentWillLoad', this.value);
+  //     this.currentItem = this.value;
+  //   }
+  // }
   connectedCallback() {
     this.uuid = `${this.uuidv4(new Date().getTime())}-rvdropdown`;
     if (typeof this.value !== 'undefined') {
@@ -282,6 +282,7 @@ const RevoDropdown = class {
     if (Array.isArray(this.currentItem)) {
       values = [...this.currentItem];
     }
+    console.log('renderMultiselected', values, this.dataLabel);
     if (values.length) {
       return h("div", null, values.map((item, index) => h("button", { style: { 'margin-left': index > 0 ? '2px' : '' }, onClick: e => {
           e.stopPropagation();
